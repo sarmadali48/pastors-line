@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 const CountryModal = ({showModal, handleCloseModal}) => {
   return (
     <Modal show={showModal}>
-      <Modal.Body>
+      <Modal.Body className="d-flex align-items-center justify-content-center vh-25 flex-column">
         <div className="p-4">
           <Button label="All Contacts" />
           <Button className="ml-2" background="#ff7f50" label="US Contacts" />
@@ -19,7 +19,9 @@ const CountryModal = ({showModal, handleCloseModal}) => {
             onClick={handleCloseModal}
           />
         </div>
+        <div className="mr-auto">
         <Form.Check type="checkbox" label="Only even" />
+        </div>
       </Modal.Body>
     </Modal>
   );
