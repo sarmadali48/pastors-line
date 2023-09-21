@@ -8,6 +8,9 @@ import { getCountriesList } from "../../redux/actions/country";
 
 const CountryModal = ({showModal, handleCloseModal}) => {
   const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  console.log("searchQuery ---- >>>> ", searchQuery)
 
   const handleButtonClick = () => {
     const data = {
@@ -31,6 +34,15 @@ const CountryModal = ({showModal, handleCloseModal}) => {
   return (
     <Modal show={showModal}>
       <Modal.Body className="d-flex align-items-center justify-content-center vh-25 flex-column">
+      <Form.Group controlId="search">
+          {/* <Form.Label>Search</Form.Label>c */}
+          <Form.Control
+            type="text"
+            placeholder="Enter search query"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </Form.Group>
         <div className="p-4">
           <Button onClick={handleButtonClick} label="All Contacts" />
           <Button className="ml-2" background="#ff7f50" onClick={handleUSContactsClick} label="US Contacts" />
