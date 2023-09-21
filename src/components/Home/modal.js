@@ -1,41 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../sharedComponents/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCountriesList } from "../../redux/actions/country";
+import { Scrollbars } from 'react-custom-scrollbars';
+
 
 
 const CountryModal = ({showModal, handleCloseModal}) => {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1); // Track the current page of contacts
+  const [loading, setLoading] = useState(false); 
 
-  console.log("searchQuery ---- >>>> ", searchQuery)
+  const contacts = [
+    1278873,
+    1311497,
+    1130071,
+    1048835,
+    916488,
+    814850,
+    814849,
+    249345,
+    248983,
+    248578,
+    248322,
+    248066,
+    247810,
+    247297,
+    246786,
+    244992,
+    1740809,
+    1817476,
+    1817474,
+    1764889
+];
+
+const countries = useSelector((state) => state.countries);
+
+useEffect(() => {
+  dispatch(getCountriesList({ companyId: 171, page: 1, noGroupDuplicates: 1 }));
+}, []);
 
   const handleButtonClick = () => {
-    const data = {
-      companyId: 171,
-      page: 1,
-      noGroupDuplicates: 1,
-    }
-    dispatch(getCountriesList(data));
+    setPage(1);
+    setLoading(true);
+    dispatch(getCountriesList({ companyId: 171, page: 1, noGroupDuplicates: 1 }))
+      .finally(() => setLoading(false));
   }
 
   const handleUSContactsClick = () => {
-    const data = {
-      companyId: 171,
-      page: 1,
-      noGroupDuplicates: 1,
-      countryId: 226,
-    }
-    dispatch(getCountriesList(data));
+    setPage(1);
+    setLoading(true);
+    dispatch(getCountriesList({ companyId: 171, page: 1, noGroupDuplicates: 1, countryId: 226 }))
+      .finally(() => setLoading(false));
   }
+
+  const handleScroll = () => {
+    const list = document.querySelector('.list-group');
+    if (list) {
+      const isAtBottom = list.scrollTop + list.clientHeight === list.scrollHeight;
+      if (isAtBottom && !loading) {
+        // If at the bottom and not currently loading, load the next page of contacts
+        setPage(page + 1);
+        setLoading(true);
+        dispatch(getCountriesList({ companyId: 171, page: page + 1, noGroupDuplicates: 1 }))
+          .finally(() => setLoading(false));
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Attach the scroll event listener when the component mounts
+    const list = document.querySelector('.list-group');
+    if (list) {
+      list.addEventListener('scroll', handleScroll);
+    }
+
+    // Detach the scroll event listener when the component unmounts
+    return () => {
+      if (list) {
+        list.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [page, loading]);
 
   return (
     <Modal show={showModal}>
       <Modal.Body className="d-flex align-items-center justify-content-center vh-25 flex-column">
       <Form.Group controlId="search">
-          {/* <Form.Label>Search</Form.Label>c */}
           <Form.Control
             type="text"
             placeholder="Enter search query"
@@ -43,6 +97,22 @@ const CountryModal = ({showModal, handleCloseModal}) => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </Form.Group>
+        <Scrollbars
+          autoHide
+          autoHideTimeout={1000}
+          autoHideDuration={200}
+          style={{ width: '100%', height: '300px' }}
+        >
+        <ul className="list-group w-100">
+          {contacts?.map((contact) => (
+            <li key={contact} className="list-group-item">
+              <div className="d-flex justify-content-between">
+                <span>{contact}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+        </Scrollbars>
         <div className="p-4">
           <Button onClick={handleButtonClick} label="All Contacts" />
           <Button className="ml-2" background="#ff7f50" onClick={handleUSContactsClick} label="US Contacts" />
