@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import Button from '../../sharedComponents/Button';
 import CountryModal from "./modal";
+import {useHistory} from "react-router-dom"
 const Home = () => {
+    const history = useHistory()
     const [showModal, setShowModal] = useState(false);
 
     const handleOpenModal = () => {
@@ -12,9 +14,9 @@ const Home = () => {
     }
     return (
         <div className="d-flex align-items-center justify-content-center vh-100">
-        <Button label="Button A" onClick={handleOpenModal} />
-        <Button className="ml-4" background="#ff7f50" label="Button B" onClick={handleOpenModal} />
-        <CountryModal showModal={showModal} handleCloseModal={handleCloseModal} />
+        <Button label="Button A" onClick={()=> history.push('/modalA')} />
+        <Button className="ml-4" background="#ff7f50" label="Button B" onClick={()=> history.push('/modalA')} />
+        {/* <CountryModal showModal={showModal} handleCloseModal={handleCloseModal} /> */}
 
     </div>
     );

@@ -5,16 +5,19 @@ import Form from "react-bootstrap/Form";
 import { useDispatch, useSelector } from "react-redux";
 import { getCountriesList } from "../../redux/actions/country";
 import { Scrollbars } from 'react-custom-scrollbars';
+import {useHistory} from "react-router-dom"
 
 
 
 const CountryModal = ({showModal, handleCloseModal}) => {
+  const history = useHistory()
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1); // Track the current page of contacts
   const [loading, setLoading] = useState(false); 
+  const [contactsIds, setContactsIds] = useState([]); 
 
-  const contacts = [
+  const contacts1 = [
     1278873,
     1311497,
     1130071,
@@ -37,11 +40,15 @@ const CountryModal = ({showModal, handleCloseModal}) => {
     1764889
 ];
 
-const countries = useSelector((state) => state.countries);
+const {contacts_ids, contacts} = useSelector((state) => state.countryReducer);
 
 useEffect(() => {
   dispatch(getCountriesList({ companyId: 171, page: 1, noGroupDuplicates: 1 }));
 }, []);
+
+useEffect(() => {
+    setContactsIds(contacts_ids);
+  }, [contacts_ids]);
 
   const handleButtonClick = () => {
     setPage(1);
@@ -104,13 +111,20 @@ useEffect(() => {
           style={{ width: '100%', height: '300px' }}
         >
         <ul className="list-group w-100">
-          {contacts?.map((contact) => (
+          {contactsIds.length>0 && contactsIds.map((contact) => (
             <li key={contact} className="list-group-item">
               <div className="d-flex justify-content-between">
                 <span>{contact}</span>
               </div>
+              {/* <div className="d-flex justify-content-between">
+                <span>{countriesList?.contacts[contact]?.email}</span>
+              </div>
+              <div className="d-flex justify-content-between">
+                <span>{countriesList?.contacts[contact]?.phone_number}</span>
+              </div> */}
             </li>
           ))}
+          <div onClick={()=> history.push('/modal')}>test</div>
         </ul>
         </Scrollbars>
         <div className="p-4">
