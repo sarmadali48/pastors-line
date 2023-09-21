@@ -3075,8 +3075,7 @@ const initialState = {
   const countryReducer = (state = initialState, action) => {
     switch (action.type) {
       case constants.GET_COUNTRY_LIST_SUCCESS:
-        // return { ...state, contacts: action.countries?.contacts || {}, contacts_ids: action.countries?.contacts_ids || [] };  
-        return { ...state }
+        return { ...state, contacts_ids: action.countries?.contacts_ids || [] };  
         case constants.GET_COUNTRY_LIST_FAILURE:
         return { ...state,  }; 
       default:

@@ -118,7 +118,6 @@ const handleQuerySearch = (e) => {
               </div>
             </li>
           ))}
-          {/* <div onClick={()=> history.push('/modal')}>test</div> */}
         </ul>
         </Scrollbars>
         <div className="p-4">

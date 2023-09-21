@@ -65,42 +65,6 @@ const ModalB = () => {
     ).finally(() => setLoading(false));
   };
 
-  const handleScroll = () => {
-    const list = document.querySelector(".list-group");
-    if (list) {
-      const isAtBottom =
-        list.scrollTop + list.clientHeight === list.scrollHeight;
-      if (isAtBottom && !loading) {
-        // If at the bottom and not currently loading, load the next page of contacts
-        setPage(page + 1);
-        setLoading(true);
-        dispatch(
-          getCountriesList({
-            companyId: 171,
-            page: page + 1,
-            noGroupDuplicates: 1,
-            countryId: 226,
-          })
-        ).finally(() => setLoading(false));
-      }
-    }
-  };
-
-  useEffect(() => {
-    // Attach the scroll event listener when the component mounts
-    const list = document.querySelector(".list-group");
-    if (list) {
-      list.addEventListener("scroll", handleScroll);
-    }
-
-    // Detach the scroll event listener when the component unmounts
-    return () => {
-      if (list) {
-        list.removeEventListener("scroll", handleScroll);
-      }
-    };
-  }, [page, loading]);
-
   const handleEvenClicked = () => {
     setIsEven(!isEven);
     if (!isEven) {
@@ -110,6 +74,16 @@ const ModalB = () => {
       setContactsIds(Object.keys(contacts));
     }
   };
+
+  const handleScrollStop = () => {
+    debounce(async () => {
+      setPage(page + 1);
+    setLoading(true);
+    dispatch(getCountriesList({ companyId: 171, page: page + 1, noGroupDuplicates: 1 }))
+      .finally(() => setLoading(false));
+     
+    }, 1500);
+  }
 
   const handleQuerySearch = (e) => {
     const value = e.target.value;
@@ -149,6 +123,7 @@ const ModalB = () => {
               autoHideTimeout={1000}
               autoHideDuration={200}
               style={{ width: "100%", height: "300px" }}
+              onScrollStop={handleScrollStop}
             >
               <ul className="list-group w-100 mt-4">
                 {contactsIds.length > 0 &&

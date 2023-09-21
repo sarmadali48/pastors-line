@@ -1,9 +1,7 @@
-import logo from './logo.svg';
 import './App.css';
 import Home from './components/Home';
 import ModalA from './components/ModalA';
 import ModalB from './components/ModalB';
-// import Router from './Router';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
