@@ -8,7 +8,17 @@ import { Scrollbars } from "react-custom-scrollbars";
 import { useHistory } from "react-router-dom";
 import ModalC from "../../sharedComponents/ModalC";
 
-const ModalB = ({ showModal, handleCloseModal }) => {
+let timer;
+
+const debounce = function (fn, d) {
+  if (timer) {
+    clearTimeout(timer);
+  }
+
+  timer = setTimeout(fn, d);
+};
+
+const ModalB = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
@@ -69,6 +79,7 @@ const ModalB = ({ showModal, handleCloseModal }) => {
             companyId: 171,
             page: page + 1,
             noGroupDuplicates: 1,
+            countryId: 226,
           })
         ).finally(() => setLoading(false));
       }
@@ -100,6 +111,22 @@ const ModalB = ({ showModal, handleCloseModal }) => {
     }
   };
 
+  const handleQuerySearch = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value)
+    debounce(async () => {
+      debugger
+      dispatch(
+        getCountriesList({
+          companyId: 171,
+          page: page + 1,
+          noGroupDuplicates: 1,
+          countryId: 226,
+          query: value
+        })
+      );
+    }, 1000);
+  }
   return (
     <Modal show={true}>
       <Modal.Body className="d-flex align-items-center justify-content-center vh-25 flex-column">
@@ -114,9 +141,8 @@ const ModalB = ({ showModal, handleCloseModal }) => {
               <Form.Control
                 type="text"
                 placeholder="Enter search query"
-                value={searchQuery}
-                
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchQuery}       
+                onChange={(e) => handleQuerySearch(e)}
               />
             </Form.Group>
             <Scrollbars

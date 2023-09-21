@@ -8,6 +8,9 @@ export const getCountriesList = (data) => {
       if (data.countryId) {
         url += `&countryId=${data.countryId}`;
       }
+      if (data.query) {
+        url += `&query=${data.query}`;
+      }
       let response = await axios.get(url);
       dispatch({
         type: constants.GET_COUNTRY_LIST_SUCCESS,
