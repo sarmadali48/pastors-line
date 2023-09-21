@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import Home from './components/Home';
 import ModalA from './components/ModalA';
+import ModalB from './components/ModalB';
 // import Router from './Router';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from "axios";
@@ -15,6 +16,7 @@ function App() {
       <Switch>
         <Route exact path="/" component={Home} /> 
         <Route exact path="/modalA" component={ModalA} /> 
+        <Route exact path="/modalB" component={ModalB} /> 
       </Switch>
       </Router>
   );

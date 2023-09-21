@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../sharedComponents/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -8,8 +8,7 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import {useHistory} from "react-router-dom";
 import ModalC  from '../../sharedComponents/ModalC';
 
-
-const ModalA = ({showModal, handleCloseModal}) => {
+const ModalB = ({showModal, handleCloseModal}) => {
   const history = useHistory()
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,9 +16,8 @@ const ModalA = ({showModal, handleCloseModal}) => {
   const [loading, setLoading] = useState(true); 
   const [contactsIds, setContactsIds] = useState([]); 
   const [selectedContent, setSelectedContent] = useState(null);
-  const [isEven, setIsEven] = useState(false);
 
-  let contacts1 = [
+  const contacts1 = [
     1278873,
     1311497,
     1130071,
@@ -53,15 +51,15 @@ useEffect(() => {
   }, [contacts_ids]);
 
   const handleButtonClick = () => {
-    history.push('/modalA')
-    setPage(1);
-    setLoading(true);
-    dispatch(getCountriesList({ companyId: 171, page: 1, noGroupDuplicates: 1 }))
-      .finally(() => setLoading(false));
+    history.push('/modalA');
   }
 
   const handleUSContactsClick = () => {
-    history.push('/modalB')
+    history.push('/modalB');
+    setPage(1);
+    setLoading(true);
+    dispatch(getCountriesList({ companyId: 171, page: 1, noGroupDuplicates: 1, countryId: 226 }))
+      .finally(() => setLoading(false));
   }
 
   const handleScroll = () => {
@@ -77,13 +75,6 @@ useEffect(() => {
       }
     }
   };
-
-  const handleEvenClicked = () => {
-    setIsEven(!isEven);
-    if(isEven){
-      contacts1 = contacts1.filter((contact) => contact % 2 === 0);
-    }
-  }
 
   useEffect(() => {
     // Attach the scroll event listener when the component mounts
@@ -103,10 +94,12 @@ useEffect(() => {
   return (
     <Modal show={true}>
       <Modal.Body className="d-flex align-items-center justify-content-center vh-25 flex-column">
-        {selectedContent ? 
-        (<ModalC selectedContent={selectedContent} setSelectedContent= {() =>setSelectedContent(null)} />) : (
-          <>
-          <Form.Group controlId="search">
+          {
+              selectedContent ? (
+                  <ModalC selectedContent={selectedContent} setSelectedContent= {() =>setSelectedContent(null)}/> 
+              ) :
+              <>
+              <Form.Group controlId="search">
           <Form.Control
             type="text"
             placeholder="Enter search query"
@@ -120,16 +113,16 @@ useEffect(() => {
           autoHideDuration={200}
           style={{ width: '100%', height: '300px' }}
         >
-        <ul className="list-group w-100 mt-4">
+        <ul className="list-group w-100 mt-4" >
           {/* {contactsIds.length>0 && contactsIds.map((contact) => ( */}
           {contacts1.map((contact) => (
             <li key={contact} onClick={() => setSelectedContent({
-              id: "755450",
-              first_name: "Jason1",
-              last_name: "Alexis1",
-              email: "jason@gmail.com",
-              phone_number: "9404480524"
-            })} className="list-group-item">
+                id: "755450",
+                first_name: "Jason1",
+                last_name: "Alexis1",
+                email: "jason@gmail.com",
+                phone_number: "9404480524"
+              })} className="list-group-item">
               <div className="d-flex justify-content-between">
                 <span>{contact}</span>
               </div>
@@ -157,15 +150,15 @@ useEffect(() => {
           />
         </div>
         <div className="mr-auto">
-        <Form.Check type="checkbox" onChange={handleEvenClicked} label="Only even" />
+        <Form.Check type="checkbox" label="Only even" />
         </div>
-          </>
-        )
-        }
+              </>
+          }
       
       </Modal.Body>
     </Modal>
+    
   );
 };
 
-export default ModalA;
+export default ModalB;
