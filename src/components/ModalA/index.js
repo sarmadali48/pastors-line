@@ -8,8 +8,17 @@ import { Scrollbars } from 'react-custom-scrollbars';
 import {useHistory} from "react-router-dom";
 import ModalC  from '../../sharedComponents/ModalC';
 
+let timer;
 
-const ModalA = ({showModal, handleCloseModal}) => {
+const debounce = function (fn, d) {
+  if (timer) {
+    clearTimeout(timer);
+  }
+
+  timer = setTimeout(fn, d);
+};
+
+const ModalA = () => {
   const history = useHistory()
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,20 +51,6 @@ useEffect(() => {
     history.push('/modalB')
   }
 
-  const handleScroll = () => {
-    const list = document.querySelector('.list-group');
-    if (list) {
-      const isAtBottom = list.scrollTop + list.clientHeight === list.scrollHeight;
-      if (isAtBottom && !loading) {
-        // If at the bottom and not currently loading, load the next page of contacts
-        setPage(page + 1);
-        setLoading(true);
-        dispatch(getCountriesList({ companyId: 171, page: page + 1, noGroupDuplicates: 1 }))
-          .finally(() => setLoading(false));
-      }
-    }
-  };
-
   const handleEvenClicked = () => {
     setIsEven(!isEven);
     if(!isEven){
@@ -66,20 +61,31 @@ useEffect(() => {
     }
   }
 
-  useEffect(() => {
-    // Attach the scroll event listener when the component mounts
-    const list = document.querySelector('.list-group');
-    if (list) {
-      list.addEventListener('scroll', handleScroll);
-    }
 
-    // Detach the scroll event listener when the component unmounts
-    return () => {
-      if (list) {
-        list.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, [page, loading]);
+const handleScrollStop = () => {
+  debounce(async () => {
+    setPage(page + 1);
+  setLoading(true);
+  dispatch(getCountriesList({ companyId: 171, page: page + 1, noGroupDuplicates: 1 }))
+    .finally(() => setLoading(false));
+   
+  }, 1500);
+}
+
+const handleQuerySearch = (e) => {
+  const value = e.target.value;
+  setSearchQuery(value)
+  debounce(async () => {
+    dispatch(
+      getCountriesList({
+        companyId: 171,
+        page: page + 1,
+        noGroupDuplicates: 1,
+        query: value
+      })
+    );
+  }, 1000);
+}
 
   return (
     <Modal show={true}>
@@ -93,13 +99,14 @@ useEffect(() => {
             placeholder="Enter search query"
             value={searchQuery}
             className="w-100"
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => handleQuerySearch(e)}
           />
         </Form.Group>
         <Scrollbars
           autoHide
           autoHideTimeout={1000}
           autoHideDuration={200}
+          onScrollStop={handleScrollStop}
           style={{ width: '100%', height: '300px' }}
         >
         <ul className="list-group w-100 mt-4">

@@ -115,7 +115,6 @@ const ModalB = () => {
     const value = e.target.value;
     setSearchQuery(value)
     debounce(async () => {
-      debugger
       dispatch(
         getCountriesList({
           companyId: 171,
